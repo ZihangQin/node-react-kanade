@@ -1,0 +1,323 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.priLoginDiv{
+    height: 100vh;
+    background-color: #081019;
+}
+
+.priLoginDiv .background {
+    width: 430px;
+    height: 520px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    /* background-color: beige; */
+}
+
+.background .shape {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    border-radius: 50%;
+    /* background-color: aquamarine; */
+}
+
+.priLoginDiv .shape:first-child {
+    background: linear-gradient(#1845ad, #23a2f6);
+    left: -90px;
+    top: -80px;
+}
+
+.priLoginDiv .shape:last-child {
+    background: linear-gradient(to right, #ff512f, #f09819);
+    right: -50px;
+    bottom: -80px;
+}
+
+.priLoginDiv form {
+    height: 500px;
+    width: 400px;
+    left: 48.6%;
+    top: 50%;
+    background-color: rgba(255, 255, 255, 0.13);
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    padding: 10px, 20px;
+}
+
+.priLoginDiv form * {
+    font-family: '黑体', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0 5px;
+    outline: none;
+    margin-left: 8px;
+    margin-top: 4px;
+}
+
+.priLoginDiv form span {
+    margin-top: -5px;
+    margin-left: 0px;
+}
+
+.priLoginDiv form h3 {
+    margin-top: 30px;
+    margin-left: -55px;
+    margin-bottom: 20px;
+    font-size: 38px;
+    display: flex;
+    justify-content: center;
+}
+
+.priLoginDiv label {
+    margin-left: 3%;
+    gap: 10px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.priLoginDiv input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #ffffff;
+}
+
+.priLoginDiv input[type="text"],
+input[type="password"] {
+    opacity: 0.8;
+    height: 40px;
+    width: 85%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    border: 2px solid rgb(209, 209, 209);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.priLoginDiv input:hover {
+    border: #d9d9d9;
+}
+
+.priLoginDiv .buttonLogin {
+    color: black;
+    font-size: 24px;
+    width: 200px;
+    height: 40px;
+    border: none;
+    background-color: #09c999;
+    border: none;
+    border-radius: 2px;
+    margin-left: 16%;
+    margin-top: -2%;
+}
+
+.priLoginDiv .buttonLogin:hover {
+    transform: scale(1.05);
+    background-color: #23a2f6;
+}
+
+.priLoginDiv .inner {
+    background: #09c999;
+    padding: 1em;
+    border-radius: 10px;
+    width: 250px;
+    clip-path: circle(10% at 90% 20%);
+    transition: all .5s ease-in-out;
+    cursor: pointer;
+}
+
+.priLoginDiv .inner:hover {
+    clip-path: circle(75%);
+    background: #00b6ff;
+}
+
+.priLoginDiv .inner h1 {
+    color: #ffffff;
+    margin: 0;
+}
+
+.priLoginDiv .inner p {
+    color: #ffffff;
+    font-size: .8rem;
+}
+
+.priLoginDiv .inner span {
+    float: right;
+    color: #ffffff;
+    font-weight: bold;
+    transition: color .5s;
+    position: relative;
+    margin-right: 3.5%;
+    line-height: 12px;
+    font-size: 24px;
+}
+
+.priLoginDiv .inner:hover span {
+    color: rgba(255, 255, 255, 0);
+}
+
+.priLoginDiv .buttonRegister {
+    margin-left: 28%;
+    margin-top: 20px;
+    background-color: #099750;
+    border-color: #d9d9d9;
+    color: #1890ff;
+}
+
+.priLoginDiv .buttonRegister:hover {
+    background-color: #1890ff;
+    color: #fff;
+}
+
+.priLoginDiv .buttonRegister .link-register{
+    margin: auto;
+    padding: auto;
+}
+
+/*登录首页背景水滴加载*/
+.drop {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    top: -30px;
+    /* margin-top: 20px; */
+    margin: 0 auto;
+    background-color: #fff;
+
+    -moz-border-radius: 20px;
+    /*用于兼容火狐浏览器内核*/
+    -webkit-border-radius: 20px;
+    /*用于兼容webkit内核浏览器*/
+    border-radius: 20px;
+
+    -moz-animation-name: drip;
+    -webkit-animation-name: drip;
+    animation-name: drip;
+
+    -moz-animation-timing-function: cubic-bezier(1, 0, .91, .19);
+    -webkit-animation-timing-function: cubic-bezier(1, 0, .91, .19);
+    animation-timing-function: cubic-bezier(1, 0, .91, .19);
+
+    -moz-animation-duration: 2s;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+.drop::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 30px solid rgba(255, 255, 255, 1);
+    top: -22px
+}
+
+@keyframes drip {
+    to {
+        top: 100px;
+    }
+}
+
+.wave {
+    position: relative;
+    opacity: 0;
+    top: 0;
+    width: 2px;
+    height: 1px;
+    margin-top: 18%;
+    margin-left: 31.3%;
+    border: #fff 7px solid;
+
+    -moz-border-radius: 300px / 150px;
+    -webkit-border-radius: 300px / 150px;
+    border-radius: 300px / 150px;
+
+    -moz-animation-name: ripple;
+    -webkit-animation-name: ripple;
+    animation-name: ripple;
+
+    -moz-animation-delay: 2s;
+    -webkit-animation-delay: 2s;
+    animation-delay: 2s;
+
+    -moz-animation-duration: 2s;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+
+.wave:after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    top: -5px;
+    left: -5px;
+    width: 2px;
+    height: 1px;
+    border: #fff 5px solid;
+
+    -moz-border-radius: 300px / 150px;
+    -webkit-border-radius: 300px / 150px;
+    border-radius: 300px / 150px;
+
+    -moz-animation-duration: 2s;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+
+    -moz-animation-name: ripple-2;
+    -webkit-animation-name: ripple-2;
+    animation-name: ripple-2;
+
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+@keyframes ripple {
+    from{
+        opacity: 1;
+    }
+    to{
+        width: 600px;
+        height: 300px;
+        border-width: 1px;
+        top: -100px;
+        opacity: 0;
+    }
+}
+
+@keyframes ripple-2 {
+    0%{
+        opacity: 1;
+    }
+    50%{
+        opacity: 0;
+    }
+    100%{
+        width: 200px;
+        height: 100px;
+        border-width: 1px;
+        top: 100px;
+        left: 200px;
+    }
+}

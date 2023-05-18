@@ -1,0 +1,183 @@
+body {
+    
+    margin: 0;
+    padding: 0;
+}
+
+.priRegisterDiv{
+    height: 100vh;
+    background-color: #073f7e;
+}
+
+.priRegisterDiv .background {
+    width: 430px;
+    height: 520px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    /* background-color: beige; */
+}
+
+.priRegisterDiv .background .shape {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    border-radius: 50%;
+    /* background-color: aquamarine; */
+}
+
+.priRegisterDiv .shape:first-child {
+    background: linear-gradient(#1845ad, #23a2f6);
+    left: -90px;
+    top: -80px;
+}
+
+.priRegisterDiv .shape:last-child {
+    background: linear-gradient(to right, #ff512f, #f09819);
+    right: -50px;
+    bottom: -80px;
+}
+
+.priRegisterDiv form {
+    height: 500px;
+    width: 400px;
+    left: 48.6%;
+    top: 50%;
+    background-color: rgba(255, 255, 255, 0.13);
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    /* padding: 10px, 20px; */
+}
+
+.priRegisterDiv form * {
+    font-family: '黑体', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0 5px;
+    outline: none;
+    margin-left: 8px;
+    /* margin-top: 7px; */
+}
+
+.priRegisterDiv form span {
+    margin-top: -5px;
+    margin-left: 5px;
+}
+
+.priRegisterDiv form h3 {
+    margin-top: 30px;
+    margin-left: -55px;
+    margin-bottom: 20px;
+    font-size: 38px;
+    display: flex;
+    justify-content: center;
+}
+
+.priRegisterDiv label {
+    font-size: 12px;
+    margin-left: 3%;
+    gap: 10px;
+    /* font-size: 20px; */
+    margin-bottom: 10px;
+}
+
+.priRegisterDiv input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #ffffff;
+}
+
+.priRegisterDiv input[type="text"],
+input[type="password"] {
+    opacity: 0.8;
+    height: 36px;
+    width: 85%;
+    /* padding: 10px; */
+    border-radius: 5px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    border: 2px solid rgb(209, 209, 209);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.priRegisterDiv input:hover {
+    border: #d9d9d9;
+}
+
+.priRegisterDiv .buttonLogin {
+    color: black;
+    font-size: 24px;
+    width: 200px;
+    height: 40px;
+    border: none;
+    background-color: #09c999;
+    border: none;
+    border-radius: 2px;
+    margin-left: 16%;
+    /* margin-top: -2%; */
+}
+
+.priRegisterDiv .buttonLogin:hover {
+    transform: scale(1.05);
+    background-color: #23a2f6;
+}
+
+
+.priRegisterDiv .inner {
+    background: #09c999;
+    padding: 1em;
+    border-radius: 10px;
+    width: 250px;
+    clip-path: circle(10% at 90% 20%);
+    transition: all .5s ease-in-out;
+    cursor: pointer;
+}
+
+.priRegisterDiv .inner:hover {
+    clip-path: circle(75%);
+    background: #00b6ff;
+}
+
+.priRegisterDiv .inner h1 {
+    color: #ffffff;
+    margin: 0;
+}
+
+.priRegisterDiv .inner p {
+    color: #ffffff;
+    font-size: .8rem;
+}
+
+.priRegisterDiv .inner span {
+    float: right;
+    color: #ffffff;
+    font-weight: bold;
+    transition: color .5s;
+    position: relative;
+    margin-right: 3.5%;
+    line-height: 12px;
+    font-size: 24px;
+}
+
+.priRegisterDiv .inner:hover span {
+    color: rgba(255, 255, 255, 0);
+}
+
+.priRegisterDiv .buttonRegister {
+    margin-left: 22%;
+    margin-top: 20px;
+    background-color: #099750;
+    border-color: #d9d9d9;
+    color: #1890ff;
+}
+
+.priRegisterDiv .buttonRegister:hover {
+    background-color: #1890ff;
+    color: #fff;
+}
