@@ -60,18 +60,18 @@ body {
     letter-spacing: 0 5px;
     outline: none;
     margin-left: 8px;
-    /* margin-top: 7px; */
+    margin-bottom: 3px;
 }
 
 .priRegisterDiv form span {
-    margin-top: -5px;
+    /* margin-top: -5px; */
     margin-left: 5px;
 }
 
 .priRegisterDiv form h3 {
-    margin-top: 30px;
+    margin-top: 15px;
     margin-left: -55px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     font-size: 38px;
     display: flex;
     justify-content: center;
