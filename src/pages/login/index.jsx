@@ -122,11 +122,9 @@ function Login() {
                         登录
                     </Button>
                     {/* </Link> */}
-                    <Button type="primary" htmlType="submit" className="buttonRegister">
-                        <Link to="/register" className="link-register">
-                            注册账号
-                        </Link>
-                    </Button>
+                    <Link to="/register" className="link-register">
+                        注册账号
+                    </Link>
                     {/* </BrowserRouter> */}
                 </Form.Item>
 

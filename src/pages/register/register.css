@@ -181,3 +181,23 @@ input[type="password"] {
     background-color: #1890ff;
     color: #fff;
 }
+
+.priRegisterDiv .link-login {
+    display: inline-block;
+    margin-top: 5%;
+    margin-left: 25%;
+    padding: 5px 12px;
+    height: 23px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #ff512f;
+    border: 1px solid #1845ad;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+ .priRegisterDiv .link-login:hover {
+    color: #fff;
+    background-color: #1845ad;
+  }

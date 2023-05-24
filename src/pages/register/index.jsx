@@ -134,12 +134,9 @@ function Register() {
                         注册账号
                     </Button>
                     <br />
-                    <Button type="link" className="buttonRegister">
-                        <Link to="/login">
+                        <Link to="/login" className="link-login">
                             已有账号去登录
                         </Link>
-                    </Button>
-
                 </Form.Item>
 
             </Form>
