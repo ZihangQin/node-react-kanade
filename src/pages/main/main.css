@@ -1,8 +1,9 @@
 .MenuList {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: flex;
-    background-color: #f0f2f5;
+    margin-top: 5px;
+    /* background-color: #f0f2f5; */
   }
   
 .Menu {
@@ -21,4 +22,43 @@
     height: auto;
     width: 82%;
     /* background-color: #08adfc; */
+}
+
+.top_menu {
+  position: relative;
+  height: 65px;
+  width: 97%;
+  background-color: orange;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.userInfo span:first-child {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.userInfo span:last-child {
+  font-size: 14px;
+  color: #666;
+}
+
+.userInfo::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1px;
+  height: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  opacity: 0.5;
 }

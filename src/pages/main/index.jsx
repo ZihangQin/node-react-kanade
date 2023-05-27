@@ -2,16 +2,21 @@ import React from "react";
 import "./main.css"
 import cookie from 'react-cookies'
 import { Menu } from 'antd'
+import axios from 'axios';
 import { Icon } from '@ant-design/compatible'
-import { Option1, Option2, Option3, Option4, Option5, Option6, Option7, Option8,
-         Option9, Option10, Option11, Option12} from '../option/options'
+import {
+  Option1, Option2, Option3, Option5, Option6, Option7,
+  Option9,
+} from '../option/options'
 
 const SubMenu = Menu.SubMenu;
 
 class Sider extends React.Component {
   state = {
     current: '1',
-    contentView: null
+    contentView: <h1>欢迎进入考试管理系统</h1>,
+    userInfoName: "",
+    userInfoCalculus: ""
   };
 
   handleClick = e => {
@@ -19,48 +24,56 @@ class Sider extends React.Component {
     this.setState({
       current: e.key,
     });
-    if(e.key === '1'){
-      this.setState({contentView: e.key === '1' ? <Option1 /> : null});
-    }else if(e.key === '2'){
-      this.setState({contentView: e.key === '2' ? <Option2 /> : null});
-    }else if(e.key === '3'){
-      this.setState({contentView: e.key === '3' ? <Option3 /> : null});
-    }else if(e.key === '4'){
-      this.setState({contentView: e.key === '4' ? <Option4 /> : null});
-    }else if(e.key === '5'){
-      this.setState({contentView: e.key === '5' ? <Option5 /> : null});
-    }else if(e.key === '6'){
-      this.setState({contentView: e.key === '6' ? <Option6 /> : null});
-    }else if(e.key === '7'){
-      this.setState({contentView: e.key === '7' ? <Option7 /> : null});
-    }else if(e.key === '8'){
-      this.setState({contentView: e.key === '8' ? <Option8 /> : null});
-    }else if(e.key === '9'){
-      this.setState({contentView: e.key === '9' ? <Option9 /> : null});
-    }else if(e.key === '10'){
-      this.setState({contentView: e.key === '10' ? <Option10 /> : null});
-    }else if(e.key === '11'){
-      this.setState({contentView: e.key === '11' ? <Option11 /> : null});
-    }else if(e.key === '12'){
-      this.setState({contentView: e.key === '12' ? <Option12 /> : null});
+    if (e.key === '1') {
+      this.setState({ contentView: e.key === '1' ? <Option1 /> : null });
+    } else if (e.key === '2') {
+      this.setState({ contentView: e.key === '2' ? <Option2 /> : null });
+    } else if (e.key === '3') {
+      this.setState({ contentView: e.key === '3' ? <Option3 /> : null });
+    } else if (e.key === '5') {
+      this.setState({ contentView: e.key === '5' ? <Option5 /> : null });
+    } else if (e.key === '6') {
+      this.setState({ contentView: e.key === '6' ? <Option6 /> : null });
+    } else if (e.key === '7') {
+      this.setState({ contentView: e.key === '7' ? <Option7 /> : null });
+    } else if (e.key === '9') {
+      this.setState({ contentView: e.key === '9' ? <Option9 /> : null });
     }
-
   };
 
-  
 
-  render() {
-     // 取
+  componentDidMount() {
     const token = cookie.load('token');
     if (!token) {
       window.location.href = "/login";
     } else {
-      console.log(token.Data);
-      // 
+      axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data)
+        .then(response => {
+          const { username, calculus } = response.data.Data;
+          this.setState({
+            userInfoName: username,
+            userInfoCalculus: calculus,
+          });
+        })
+        .catch(error => {
+          console.error(`请求失败：${error}`);
+        });
+    }
+  }
 
-      return (
-        // <>
-          <div className="MenuList" style={{ height: "104vh" }}>
+
+  render() {
+    return (
+      <>
+        <div className="top_menu">
+          <span>考试管理系统</span>
+          <div className="userInfo">
+            <span>用户名：{this.state.userInfoName}</span>
+            <span>积分：{this.state.userInfoCalculus}</span>
+          </div>
+        </div>
+        <div className="MenuList" style={{ height: "90vh" }}>
+
           <div className="Menu">
             <Menu
               onClick={this.handleClick}
@@ -69,25 +82,18 @@ class Sider extends React.Component {
               selectedKeys={[this.state.current]}
               mode="inline"
             >
-              <SubMenu key="sub1" title={<span><Icon type="mail" /><span>导航一</span></span>}>
-                <Menu.Item key="1">选项1</Menu.Item>
-                <Menu.Item key="2">选项2</Menu.Item>
-                <Menu.Item key="3">选项3</Menu.Item>
-                <Menu.Item key="4">选项4</Menu.Item>
+              <SubMenu key="sub1" title={<span><Icon type="mail" /><span>系统管理</span></span>}>
+                <Menu.Item key="1">查看当前账号信息</Menu.Item>
+                <Menu.Item key="2">修改密码</Menu.Item>
+                <Menu.Item key="3">关于</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>导航二</span></span>}>
-                <Menu.Item key="5">选项5</Menu.Item>
-                <Menu.Item key="6">选项6</Menu.Item>
-                <SubMenu key="sub3" title="三级导航">
-                  <Menu.Item key="7">选项7</Menu.Item>
-                  <Menu.Item key="8">选项8</Menu.Item>
-                </SubMenu>
+              <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>考试管理</span></span>}>
+                <Menu.Item key="5">试题管理</Menu.Item>
+                <Menu.Item key="6">科目管理</Menu.Item>
+                <Menu.Item key="7">试卷管理</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub4" title={<span><Icon type="setting" /><span>导航三</span></span>}>
-                <Menu.Item key="9">选项9</Menu.Item>
-                <Menu.Item key="10">选项10</Menu.Item>
-                <Menu.Item key="11">选项11</Menu.Item>
-                <Menu.Item key="12">选项12</Menu.Item>
+              <SubMenu key="sub4" title={<span><Icon type="setting" /><span>班级管理</span></span>}>
+                <Menu.Item key="9">查看班级</Menu.Item>
               </SubMenu>
             </Menu>
           </div>
@@ -95,8 +101,8 @@ class Sider extends React.Component {
             {this.state.contentView}
           </div>
         </div>
-      );
-    }
+      </>
+    );
   }
 }
 
