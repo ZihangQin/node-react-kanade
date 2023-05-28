@@ -1,0 +1,29 @@
+.search_top{
+    width: 100%;
+    height: 60px;
+    margin-top: 10px;
+    background-color: #0854ad;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data_middle{
+    width: 100%;
+    height: 75%;
+    margin-top: 5px;
+    background-color: #806440;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.paging_button{
+    width: 100%;
+    height: 10%;
+    margin-top: 5px;
+    display: flex;
+    background-color: #1054df;
+    justify-content: center;
+    align-items: center;
+}

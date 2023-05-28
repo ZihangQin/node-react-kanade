@@ -4,10 +4,8 @@ import cookie from 'react-cookies'
 import { Menu } from 'antd'
 import axios from 'axios';
 import { Icon } from '@ant-design/compatible'
-import {
-  Option1, Option2, Option3, Option5, Option6, Option7,
-  Option9,
-} from '../option/options'
+import  Options from '../option/options'
+import DynamicTable from "../homeComp/itemManagement";
 
 const SubMenu = Menu.SubMenu;
 
@@ -25,19 +23,21 @@ class Sider extends React.Component {
       current: e.key,
     });
     if (e.key === '1') {
-      this.setState({ contentView: e.key === '1' ? <Option1 /> : null });
+      this.setState({ contentView: e.key === '1' ? <Options options={[{id: 1, bgColor: 'red', content: 'Option 1'}]}
+        /> : null });
     } else if (e.key === '2') {
-      this.setState({ contentView: e.key === '2' ? <Option2 /> : null });
+      this.setState({ contentView: e.key === '2' ? <Options /> : null });
     } else if (e.key === '3') {
-      this.setState({ contentView: e.key === '3' ? <Option3 /> : null });
+      this.setState({ contentView: e.key === '3' ? <Options /> : null });
     } else if (e.key === '5') {
-      this.setState({ contentView: e.key === '5' ? <Option5 /> : null });
+      this.setState({ contentView: e.key === '5' ? <Options options={[{id: 5, bgColor: '#f5f5f5', content: <DynamicTable/>}]}
+      /> : null });
     } else if (e.key === '6') {
-      this.setState({ contentView: e.key === '6' ? <Option6 /> : null });
+      this.setState({ contentView: e.key === '6' ? <Options /> : null });
     } else if (e.key === '7') {
-      this.setState({ contentView: e.key === '7' ? <Option7 /> : null });
+      this.setState({ contentView: e.key === '7' ? <Options /> : null });
     } else if (e.key === '9') {
-      this.setState({ contentView: e.key === '9' ? <Option9 /> : null });
+      this.setState({ contentView: e.key === '9' ? <Options /> : null });
     }
   };
 
@@ -94,6 +94,9 @@ class Sider extends React.Component {
               </SubMenu>
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>班级管理</span></span>}>
                 <Menu.Item key="9">查看班级</Menu.Item>
+              </SubMenu>
+              <SubMenu key="sub5" title={<span><Icon type="login" /><span>日志管理页面</span></span>}>
+                <Menu.Item key="10">查看日志</Menu.Item>
               </SubMenu>
             </Menu>
           </div>
