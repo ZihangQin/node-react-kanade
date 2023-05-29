@@ -85,16 +85,16 @@ export default class DynamicTable extends React.Component {
                                 </thead>
                                 <tbody>
                                     {TestLists.map((item) => (
-                                        <tr key={item.ID}>
-                                            <td>{item.ID}</td>
-                                            <td>{item.Title}</td>
-                                            <td>{item.Class}</td>
-                                            <td>{item.Score}</td>
-                                            <td>{item.TitleType}</td>
-                                            <td>{item.Difficulty}</td>
-                                            <td>{item.QuestionsSetter}</td>
-                                            <td>{item.Answer}</td>
-                                            <td>{item.CreatedAt}</td>
+                                        <tr key={item.id}>
+                                            <td>{item.id}</td>
+                                            <td>{item.title}</td>
+                                            <td>{item.class}</td>
+                                            <td>{item.score}</td>
+                                            <td>{item.title_type}</td>
+                                            <td>{item.difficulty}</td>
+                                            <td>{item.questionsSetter}</td>
+                                            <td>{item.answer}</td>
+                                            <td>{item.updateAt}</td>
                                             <td>
                                                 <button type="submit">修改</button>
                                                 &nbsp; &nbsp; &nbsp;
@@ -130,7 +130,7 @@ export default class DynamicTable extends React.Component {
                     )}
                 </div>
                 <div className="paging_button">
-                    <span>批量删除</span>
+                    <div><span>批量删除</span></div>
                     <Pagination defaultCurrent={1} current={page} total={TitlePages*10} onChange={this.handleChangePage} />,
                 </div>
             </>

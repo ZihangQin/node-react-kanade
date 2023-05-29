@@ -1,7 +1,8 @@
 .search_top {
     width: 100%;
     height: 60px;
-    margin-top: 10px;
+    margin-bottom: 0px;
+    padding-top: 10px;
     /* background-color: #0854ad; */
     display: flex;
     align-items: center;
@@ -52,4 +53,25 @@ td {
 }
 .data_middle tr{
     color: #200101;
+}
+
+.paging_button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.paging_button > div {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.paging_button > div > span {
+    margin-right: 10px;
+    color: red;
+}
+
+.ant-pagination {
+    margin-left: -150px;
 }

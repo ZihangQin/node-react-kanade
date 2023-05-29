@@ -23,21 +23,22 @@ class Sider extends React.Component {
       current: e.key,
     });
     if (e.key === '1') {
-      this.setState({ contentView: e.key === '1' ? <Options options={[{id: 1, bgColor: 'red', content: 'Option 1'}]}
-        /> : null });
+      this.setState({ contentView: e.key === '1' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 1'}]}/> : null });
     } else if (e.key === '2') {
-      this.setState({ contentView: e.key === '2' ? <Options /> : null });
+      this.setState({ contentView: e.key === '2' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 2'}]}/> : null });
     } else if (e.key === '3') {
-      this.setState({ contentView: e.key === '3' ? <Options /> : null });
+      this.setState({ contentView: e.key === '3' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 3'}]}/> : null })
     } else if (e.key === '5') {
-      this.setState({ contentView: e.key === '5' ? <Options options={[{id: 5, bgColor: '#f5f5f5', content: <DynamicTable/>}]}
+      this.setState({ contentView: e.key === '5' ? <Options options={[{id: e.key, bgColor: '#f5f5f5', content: <DynamicTable/>}]}
       /> : null });
     } else if (e.key === '6') {
-      this.setState({ contentView: e.key === '6' ? <Options /> : null });
+      this.setState({ contentView: e.key === '6' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 6'}]}/> : null })
     } else if (e.key === '7') {
-      this.setState({ contentView: e.key === '7' ? <Options /> : null });
+      this.setState({ contentView: e.key === '7' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 7'}]}/> : null })
     } else if (e.key === '9') {
-      this.setState({ contentView: e.key === '9' ? <Options /> : null });
+      this.setState({ contentView: e.key === '9' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 9'}]}/> : null })
+    }else if (e.key === '10') {
+      this.setState({ contentView: e.key === '10' ? <Options options={[{id: e.key, bgColor: 'red', content: '日志管理'}]}/> : null })
     }
   };
 
