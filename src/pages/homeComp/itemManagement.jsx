@@ -2,6 +2,7 @@ import React from "react";
 import './DynamicTable.css';
 import { Pagination } from 'antd';
 import axios from 'axios';
+import cookie from 'react-cookies'
 
 export default class DynamicTable extends React.Component {
     constructor(props) {
@@ -12,15 +13,15 @@ export default class DynamicTable extends React.Component {
             page: 1, // 初始化当前页数为1
             loading: false, // 添加一个loading状态用于展示数据加载中的提示
             error: null, // 添加一个error状态用于展示请求数据时出现的错误信息
-            checked: {} // 存储哪些复选框被选中了
+            checked: {}, // 存储哪些复选框被选中了
         };
     }
 
     async componentDidMount() {
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
-
+        const token = cookie.load('token');
         try {
-            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + this.state.page);
+            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + this.state.page+'&token='+token.Data);
             const { TestLists, TitlePages } = response.data.Data;
             this.setState({ TestLists, TitlePages, loading: false }); // 请求数据成功后将loading状态设置为false
         } catch (err) {
@@ -31,9 +32,9 @@ export default class DynamicTable extends React.Component {
 
     handleChangePage = async (page) => { // 分页组件的onChange回调函数
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
-
+        const token = cookie.load('token');
         try {
-            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + page);
+            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + page+'&token='+token.Data);
             const { TestLists, TitlePages } = response.data.Data;
             this.setState({ TestLists, TitlePages, page, loading: false, error: null }); // 更新state中的data、totalPage和page属性并将loading状态设置为false，清除error状态
         } catch (err) {
@@ -74,14 +75,33 @@ export default class DynamicTable extends React.Component {
         this.setState({ checked: newChecked });
     }
 
-    getCheckTrue = (e) => {
+    getCheckTrue = (e) => {//批量删除
         console.log(this.state.checked)
+        if (this.state.checked.length){
+            alert("请选择要批量删除的数据")
+        }
         //此处后端请求批量删除
+        axios.post("http://127.0.0.1:8080/api/browse/deleteTests",{
+            strList: this.state.checked,
+            token: this.token
+        })
+        .then(require => {
+            console.log(require.data.Msg)
+            this.refreshComponent(); // 请求成功后重新加载组件
+        })
+        .catch(error => {
+            console.error(`请求失败：${error}`);
+          });
     }
-
+    
+    refreshComponent = () => {
+        // 更新状态中的key值来触发重新渲染
+        this.setState(prevState => ({ key: prevState.key + 1 }));
+    }
 
     render() {
         const { TestLists, TitlePages, page, loading, error } = this.state;
+       
 
         // 如果发生了错误，则展示错误信息
         if (error) {

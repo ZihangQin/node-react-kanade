@@ -10,7 +10,6 @@ import Register from './pages/register';
 export default class App extends Component {
     render() {
         return (
-            // <Sider/>
             <Router>
                <div>
                <Routes>

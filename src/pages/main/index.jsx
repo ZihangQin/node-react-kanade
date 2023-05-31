@@ -14,8 +14,11 @@ class Sider extends React.Component {
     current: '1',
     contentView: <h1>欢迎进入考试管理系统</h1>,
     userInfoName: "",
-    userInfoCalculus: ""
+    userInfoCalculus: "",
+    key: 0, // 将key属性抽离到state中
   };
+
+  
 
   handleClick = e => {
     console.log('click ', e);
@@ -29,7 +32,7 @@ class Sider extends React.Component {
     } else if (e.key === '3') {
       this.setState({ contentView: e.key === '3' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 3'}]}/> : null })
     } else if (e.key === '5') {
-      this.setState({ contentView: e.key === '5' ? <Options options={[{id: e.key, bgColor: '#f5f5f5', content: <DynamicTable/>}]}
+      this.setState({ contentView: e.key === '5' ? <Options options={[{id: e.key, bgColor: '#f5f5f5', content: <DynamicTable key={this.state.key}/>}]}
       /> : null });
     } else if (e.key === '6') {
       this.setState({ contentView: e.key === '6' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 6'}]}/> : null })
