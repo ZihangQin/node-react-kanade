@@ -90,7 +90,7 @@ export default class DynamicTable extends React.Component {
             token: this.token
         })
             .then(require => {
-                console.log(require.data.Msg)
+                console.log(require)
                 this.refreshComponent(); // 请求成功后重新加载组件
             })
             .catch(error => {
@@ -99,8 +99,27 @@ export default class DynamicTable extends React.Component {
     }
 
     refreshComponent = () => {
-        // 更新状态中的key值来触发重新渲染
-        this.setState(prevState => ({ key: prevState.key + 1 }));
+        this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
+        const token = cookie.load('token');
+        try {
+            axios.get(
+                'http://127.0.0.1:8080/api/browse/testList?page=' + 1 + '&token=' + token.Data)
+                .then(require => {
+                    console.log(require)
+                    const { TestLists, TitlePages } = require.data.Data;
+                    this.setState({
+                        page: 1,
+                        TestLists,
+                        TitlePages,
+                        loading: false, // 设置loading为false表示请求结束
+                        checked: {} // 清空选中状态
+                    });
+                })
+
+        } catch (err) {
+            console.log('请求数据出错', err);
+            this.setState({ error: '请求数据出错', loading: false });
+        }
     }
 
     handleAddClick = () => {
@@ -132,9 +151,13 @@ export default class DynamicTable extends React.Component {
 
     handleSearchClick = (e) => {//新增请求
         const inputValue = this.inputRef.current.value;
-        axios.get('http://127.0.0.1:8080/api/browse/searchTests?data='+inputValue).then(response => {
+        axios.get('http://127.0.0.1:8080/api/browse/searchTests?data=' + inputValue).then(response => {
             console.log(response.data);
-            this.setState({TestLists: response.data.Data})
+            if (response.data.Data.test.length <= 0) {
+                alert("暂无查询到改题目")
+                return
+            }
+            this.setState({ TestLists: response.data.Data.test, TitlePages: response.data.Data.totle })
         }).catch(error => {
             console.log(error);
         });
@@ -153,7 +176,7 @@ export default class DynamicTable extends React.Component {
                 <div className="search_top">
                     <div className="title">试题管理</div>
                     <input placeholder="请输入要查询的内容" className="search_input" type="text"
-                        style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef}/>
+                        style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef} />
                     <input type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
                     <input type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} />
                 </div>

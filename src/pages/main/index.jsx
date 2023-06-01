@@ -105,6 +105,7 @@ class Sider extends React.Component {
               </SubMenu>
             </Menu>
           </div>
+          
           <div className="priView">
             {this.state.contentView}
           </div>
