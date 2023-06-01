@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Icon } from '@ant-design/compatible'
 import  Options from '../option/options'
 import DynamicTable from "../homeComp/itemManagement";
+import Log from "../loggin";
 
 const SubMenu = Menu.SubMenu;
 
@@ -41,7 +42,7 @@ class Sider extends React.Component {
     } else if (e.key === '9') {
       this.setState({ contentView: e.key === '9' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 9'}]}/> : null })
     }else if (e.key === '10') {
-      this.setState({ contentView: e.key === '10' ? <Options options={[{id: e.key, bgColor: 'red', content: '日志管理'}]}/> : null })
+      this.setState({ contentView: e.key === '10' ? <Options options={[{id: e.key, bgColor: '#f5f5f5', content: <Log/>}]}/> : null })
     }
   };
 
@@ -72,7 +73,7 @@ class Sider extends React.Component {
         <div className="top_menu">
           <span>考试管理系统</span>
           <div className="userInfo">
-            <span>用户名：{this.state.userInfoName}</span>
+            <span>用户名：{this.state.userInfoName},</span>
             <span>积分：{this.state.userInfoCalculus}</span>
           </div>
         </div>

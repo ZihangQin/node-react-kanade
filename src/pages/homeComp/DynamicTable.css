@@ -29,6 +29,11 @@
     align-items: center;
 }
 
+.data_middle {
+    max-height: 100%;
+    /* overflow-y: auto; */
+}
+
 /* DynamicTable.css */
 .data_middle table {
     margin: 0 auto;
@@ -51,7 +56,8 @@ td {
     background-color: #1890ff;
     color: #000;
 }
-.data_middle tr{
+
+.data_middle tr {
     color: #200101;
 }
 
@@ -61,17 +67,58 @@ td {
     justify-content: space-between;
 }
 
-.paging_button > div {
+.paging_button>div {
     display: flex;
     align-items: center;
     margin-left: 10px;
 }
 
-.paging_button > div > span {
+.paging_button>div>span {
     margin-right: 10px;
     color: red;
 }
 
 .ant-pagination {
     margin-left: -150px;
+}
+
+.label {
+    display: inline-block;
+    width: 100px;
+    text-align-last: justify;
+}
+
+
+.title {
+    width: 75px;
+    height: auto;
+    font-size: 18px;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+    /* 添加文字凸起效果 */
+    margin-top: -52px;
+    margin-left: -480px;
+    margin-right: 250px;
+    background-color: #dc143c;
+    /* 阮红色 */
+}
+
+.search_top {
+    display: flex;
+    align-items: center;
+}
+
+.search_top .search_input {
+    width: 300px;
+    /* 修改宽度 */
+}
+
+
+.data_middle {
+    opacity: 1;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.data_middle--hidden {
+    opacity: 0;
 }

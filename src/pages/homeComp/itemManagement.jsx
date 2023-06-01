@@ -1,6 +1,6 @@
 import React from "react";
 import './DynamicTable.css';
-import { Pagination } from 'antd';
+import { Pagination, Modal } from 'antd';
 import axios from 'axios';
 import cookie from 'react-cookies'
 
@@ -14,14 +14,18 @@ export default class DynamicTable extends React.Component {
             loading: false, // 添加一个loading状态用于展示数据加载中的提示
             error: null, // 添加一个error状态用于展示请求数据时出现的错误信息
             checked: {}, // 存储哪些复选框被选中了
+            visible: false, // 控制Modal显示与隐藏
+            addContent: '', // 存储输入的新增内容
+            isListPage: true, // 添加 isListPage 变量，默认为 true
         };
-    }
+        this.inputRef = React.createRef();
 
+    }
     async componentDidMount() {
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
-            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + this.state.page+'&token='+token.Data);
+            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + this.state.page + '&token=' + token.Data);
             const { TestLists, TitlePages } = response.data.Data;
             this.setState({ TestLists, TitlePages, loading: false }); // 请求数据成功后将loading状态设置为false
         } catch (err) {
@@ -34,7 +38,7 @@ export default class DynamicTable extends React.Component {
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
-            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + page+'&token='+token.Data);
+            const response = await axios.get('http://127.0.0.1:8080/api/browse/testList?page=' + page + '&token=' + token.Data);
             const { TestLists, TitlePages } = response.data.Data;
             this.setState({ TestLists, TitlePages, page, loading: false, error: null }); // 更新state中的data、totalPage和page属性并将loading状态设置为false，清除error状态
         } catch (err) {
@@ -49,10 +53,10 @@ export default class DynamicTable extends React.Component {
         checkboxes.forEach((checkbox) => {
             checkbox.checked = e.target.checked; // 遍历所有DOM节点并将其checked属性设置为全选复选框的选中状态
             const { id } = checkbox;
-            if(checkbox.checked){
-                checked[checkbox.getAttribute('id')] =  id// 将每个复选框的选中状态存储到checked对象中
-            }else{
-               delete checked[checkbox.getAttribute('id')] // 将每个复选框的选中状态存储到checked对象中
+            if (checkbox.checked) {
+                checked[checkbox.getAttribute('id')] = id// 将每个复选框的选中状态存储到checked对象中
+            } else {
+                delete checked[checkbox.getAttribute('id')] // 将每个复选框的选中状态存储到checked对象中
             }
         });
         this.setState({ checked }); // 设置state中的checked属性
@@ -77,31 +81,67 @@ export default class DynamicTable extends React.Component {
 
     getCheckTrue = (e) => {//批量删除
         console.log(this.state.checked)
-        if (this.state.checked.length){
+        if (this.state.checked.length) {
             alert("请选择要批量删除的数据")
         }
         //此处后端请求批量删除
-        axios.post("http://127.0.0.1:8080/api/browse/deleteTests",{
+        axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
             strList: this.state.checked,
             token: this.token
         })
-        .then(require => {
-            console.log(require.data.Msg)
-            this.refreshComponent(); // 请求成功后重新加载组件
-        })
-        .catch(error => {
-            console.error(`请求失败：${error}`);
-          });
+            .then(require => {
+                console.log(require.data.Msg)
+                this.refreshComponent(); // 请求成功后重新加载组件
+            })
+            .catch(error => {
+                console.error(`请求失败：${error}`);
+            });
     }
-    
+
     refreshComponent = () => {
         // 更新状态中的key值来触发重新渲染
         this.setState(prevState => ({ key: prevState.key + 1 }));
     }
 
+    handleAddClick = () => {
+        this.setState({ visible: true });
+    }
+
+    handleChangeAddContent = (e) => {
+        this.setState({ addContent: e.target.value });
+    }
+
+    handleAddOk = () => {
+        axios.post("http://127.0.0.1:8080/api/add", {
+            content: this.state.addContent
+        })
+            .then(require => {
+                // 请求成功后隐藏Modal并重新加载组件
+                this.setState({ visible: false, addContent: '' });
+                this.refreshComponent();
+            })
+            .catch(error => {
+                console.error(`请求失败：${error}`);
+            });
+    }
+
+    handleAddCancel = () => {
+        this.setState({ visible: false, addContent: '' });
+    }
+
+
+    handleSearchClick = (e) => {//新增请求
+        const inputValue = this.inputRef.current.value;
+        axios.get('http://127.0.0.1:8080/api/browse/searchTests?data='+inputValue).then(response => {
+            console.log(response.data);
+            this.setState({TestLists: response.data.Data})
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     render() {
-        const { TestLists, TitlePages, page, loading, error } = this.state;
-       
+        const { loading, TestLists, page, TitlePages, error } = this.state;
 
         // 如果发生了错误，则展示错误信息
         if (error) {
@@ -111,17 +151,14 @@ export default class DynamicTable extends React.Component {
         return (
             <>
                 <div className="search_top">
-                    <input type="text"></input>
-                    &nbsp; &nbsp; &nbsp;
-                    <input type="text"></input>
-                    &nbsp; &nbsp; &nbsp;
-                    <input type="text"></input>
-                    &nbsp; &nbsp; &nbsp;
-                    <input type="submit" value={"查询"}></input>
-                    &nbsp; &nbsp; &nbsp;
-                    <input type="submit" value={"新增"}></input>
+                    <div className="title">试题管理</div>
+                    <input placeholder="请输入要查询的内容" className="search_input" type="text"
+                        style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef}/>
+                    <input type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
+                    <input type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} />
                 </div>
-                <div className="data_middle">
+
+                <div className={`data_middle`}>
                     {loading ? (
                         <div>数据加载中...</div> // 如果loading状态为true，则展示数据加载中的提示信息
                     ) : (
@@ -193,10 +230,32 @@ export default class DynamicTable extends React.Component {
                         </>
                     )}
                 </div>
+
                 <div className="paging_button">
                     <div onClick={this.getCheckTrue}><span>批量删除</span></div>
                     <Pagination defaultCurrent={1} current={page} total={TitlePages * 10} onChange={this.handleChangePage} />,
                 </div>
+
+                <Modal
+                    title=""
+                    visible={this.state.visible}
+                    onOk={this.handleAddOk}
+                    onCancel={this.handleAddCancel}
+                    okText="确定"
+                    cancelText="关闭" // 将Cancel按钮的文本替换为"关闭"
+                >
+                    <span className="label">题&nbsp;&nbsp;&nbsp;型：</span>
+                    <input placeholder="题型" value={this.state.addContent} onChange={this.handleChangeAddContent} /><br />
+                    <br />
+                    <span className="label">考试班级：</span>
+                    <input placeholder="考试班级" value={this.state.addContent} onChange={this.handleChangeAddContent} /><br />
+                    <br />
+                    <span className="label">题&nbsp;&nbsp;&nbsp;目：</span>
+                    <input placeholder="题目" value={this.state.addContent} onChange={this.handleChangeAddContent} /><br />
+                    <br />
+                    <span className="label">难&nbsp;&nbsp;&nbsp;度：</span>
+                    <input placeholder="难度" value={this.state.addContent} onChange={this.handleChangeAddContent} /><br />
+                </Modal>
             </>
         )
     }
