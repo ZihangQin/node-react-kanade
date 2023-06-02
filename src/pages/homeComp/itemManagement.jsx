@@ -1,6 +1,6 @@
 import React from "react";
 import './DynamicTable.css';
-import { Pagination, Modal, Popconfirm, message } from 'antd';
+import { Pagination, Modal, Popconfirm, message, Form, Input } from 'antd';
 import axios from 'axios';
 import cookie from 'react-cookies'
 import { Link } from "react-router-dom";
@@ -18,10 +18,29 @@ export default class DynamicTable extends React.Component {
             visible: false, // 控制Modal显示与隐藏
             addContent: '', // 存储输入的新增内容
             isListPage: true, // 添加 isListPage 变量，默认为 true
-            form: {}    //用于保存新增弹框中输入值
+            form: {},    //用于保存新增弹框中输入值
+            editForm: {}, // 编辑试题表单数据
+            editVisible: false
         };
         this.inputRef = React.createRef();
     }
+
+    handleEdit = (item) => {// 将要编辑的试题信息存入editForm中
+        this.setState({
+            editForm: {
+                id: item.id,
+                type: item.title_type,
+                grade: item.class,
+                content: item.title,
+                difficulty: item.difficulty,
+                score: item.score,
+                answer: item.answer,
+                updateAt: item.updateAt
+            },
+            editVisible: true
+        });
+    }
+
     async componentDidMount() {//首次加载改组件的回调
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
@@ -99,7 +118,7 @@ export default class DynamicTable extends React.Component {
             });
     }
 
-    refreshComponent = () => {//批量删除的回调
+    refreshComponent = () => {//返回第一页的回调
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
@@ -145,7 +164,11 @@ export default class DynamicTable extends React.Component {
         const answer = this.state.form.answer;
         const token = cookie.load('token');
 
-        // console.log(type, grade, content, difficulty, score, answer)
+        console.log(type, grade, content, difficulty, score, answer)
+        if (type === undefined || grade === undefined || content === undefined || difficulty === undefined || score === undefined || answer === undefined || token === undefined) {
+            alert("输入不能为空")
+            return
+        }
 
         axios.post("http://127.0.0.1:8080/api/browse/saveTest", {
             type: type,
@@ -155,6 +178,10 @@ export default class DynamicTable extends React.Component {
             score: score,
             answer: answer,
             token: token.Data
+        }).then(require => {
+            this.refreshComponent();
+        }).catch(error => {
+            console.log(error)
         })
 
         // 清空输入框中的值并关闭Modal
@@ -172,8 +199,13 @@ export default class DynamicTable extends React.Component {
         this.setState({ visible: false, addContent: '' });
     }
 
+    handleEditChange = (key, value) => {
+        const newForm = { ...this.state.editForm, [key]: value };
+        this.setState({ editForm: newForm });
+    }
 
-    handleSearchClick = (e) => {//新增请求
+
+    handleSearchClick = (e) => {//搜索请求
         const inputValue = this.inputRef.current.value;
         if (inputValue === "") {
             alert("请输入要查询的内容！！！")
@@ -212,6 +244,21 @@ export default class DynamicTable extends React.Component {
         message.error('取消了删除')
     }
 
+
+    handleEditOk = () => {//修改请求
+        // 处理编辑操作，将新的数据提交给后端保存
+        // ...
+
+        this.setState({ editVisible: false }); // 关闭编辑试题模态框
+    }
+
+    handleEditCancel = () => {
+        this.setState({
+            editVisible: false
+        });
+    }
+
+
     render() {
         const { loading, TestLists, page, TitlePages, error } = this.state;
 
@@ -224,7 +271,7 @@ export default class DynamicTable extends React.Component {
             <>
                 {/* 顶部搜索框 */}
                 <div className="search_top">
-                    <div className="title">试题管理</div>
+                    <div className="title" onClick={this.refreshComponent}>试题管理</div>
                     <input placeholder="请输入要查询的内容" className="search_input" type="text"
                         style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef} />
                     <input type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
@@ -237,7 +284,7 @@ export default class DynamicTable extends React.Component {
                         <div>数据加载中...</div> // 如果loading状态为true，则展示数据加载中的提示信息
                     ) : (
                         <>
-                            {TestLists.length > 0 ? ( // 如果有数据则展示表格
+                            {TestLists != null ? ( // 如果有数据则展示表格
                                 <table>
                                     <thead>
                                         <tr>
@@ -270,7 +317,7 @@ export default class DynamicTable extends React.Component {
                                                 <td>{item.answer}</td>
                                                 <td>{item.updateAt}</td>
                                                 <td>
-                                                    <button type="submit">修改</button>
+                                                    <button type="submit" onClick={() => this.handleEdit(item)}>修改</button>
                                                     &nbsp; &nbsp; &nbsp;
                                                     <Popconfirm
                                                         title="确定要删除这个试题吗？"
@@ -307,8 +354,15 @@ export default class DynamicTable extends React.Component {
 
                                             </tr>
                                         </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td colspan="9"><div>暂无数据</div></td>
+                                                <td>无操作</td>
+                                            </tr>
+                                        </tbody>
                                     </table>
-                                    <div>暂无数据</div>
+
                                 </>
                             )}
                         </>
@@ -323,7 +377,7 @@ export default class DynamicTable extends React.Component {
 
                 {/* 点击新增弹出的交互框 */}
                 <Modal
-                    title=""
+                    title="添加试题"
                     visible={this.state.visible}
                     onOk={this.handleAddOk}
                     onCancel={this.handleAddCancel}
@@ -350,6 +404,41 @@ export default class DynamicTable extends React.Component {
 
 
                 </Modal>
+
+                <Modal
+                    title="编辑试题"
+                    visible={this.state.editVisible}
+                    onOk={this.handleEditOk}
+                    // handleEditChange
+                    onCancel={this.handleEditCancel}
+                    okText="确定"
+                    cancelText="关闭" // 将Cancel按钮的文本替换为"关闭"
+                >
+                    <Form>
+                        <Form.Item label="序号">
+                            {this.state.editForm.id}
+                        </Form.Item>
+                        <Form.Item label="题型">
+                            <Input value={this.state.editForm.type} onChange={(e) => this.handleEditChange('type', e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="考试班级">
+                            <Input value={this.state.editForm.grade} onChange={(e) => this.handleEditChange('grade', e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="题目">
+                            <Input value={this.state.editForm.content} onChange={(e) => this.handleEditChange('content', e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="难度">
+                            <Input value={this.state.editForm.difficulty} onChange={(e) => this.handleEditChange('difficulty', e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="分值">
+                            <Input value={this.state.editForm.score} onChange={(e) => this.handleEditChange('score', e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="答案">
+                            <Input value={this.state.editForm.answer} onChange={(e) => this.handleEditChange('answer', e.target.value)} />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+
             </>
         )
     }

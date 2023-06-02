@@ -31,7 +31,6 @@
 
 .data_middle {
     max-height: 100%;
-    /* overflow-y: auto; */
 }
 
 /* DynamicTable.css */
@@ -111,14 +110,4 @@ td {
 .search_top .search_input {
     width: 300px;
     /* 修改宽度 */
-}
-
-
-.data_middle {
-    opacity: 1;
-    transition: opacity 0.4s ease-in-out;
-}
-
-.data_middle--hidden {
-    opacity: 0;
 }
