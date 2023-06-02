@@ -87,7 +87,7 @@ class Sider extends React.Component {
               selectedKeys={[this.state.current]}
               mode="inline"
             >
-              <SubMenu key="sub1" title={<span><Icon type="mail" /><span>系统管理</span></span>}>
+              <SubMenu key="sub1" title={<span><Icon type="setting" /><span>系统管理</span></span>}>
                 <Menu.Item key="1">查看当前账号信息</Menu.Item>
                 <Menu.Item key="2">修改密码</Menu.Item>
                 <Menu.Item key="3">关于</Menu.Item>
@@ -97,7 +97,7 @@ class Sider extends React.Component {
                 <Menu.Item key="6">科目管理</Menu.Item>
                 <Menu.Item key="7">试卷管理</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub4" title={<span><Icon type="setting" /><span>班级管理</span></span>}>
+              <SubMenu key="sub4" title={<span><Icon type="home" /><span>班级管理</span></span>}>
                 <Menu.Item key="9">查看班级</Menu.Item>
               </SubMenu>
               <SubMenu key="sub5" title={<span><Icon type="login" /><span>日志管理页面</span></span>}>

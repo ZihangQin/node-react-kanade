@@ -21,7 +21,7 @@ export default class DynamicTable extends React.Component {
         this.inputRef = React.createRef();
 
     }
-    async componentDidMount() {
+    async componentDidMount() {//首次加载改组件的回调
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
@@ -47,7 +47,7 @@ export default class DynamicTable extends React.Component {
         }
     }
 
-    handleSelectAll = (e) => {
+    handleSelectAll = (e) => {//全选表格内的复选框
         const checkboxes = document.querySelectorAll('input[type="checkbox"][name="myCheckbox"]'); // 获取所有复选框的DOM节点列表
         const checked = {};
         checkboxes.forEach((checkbox) => {
@@ -98,7 +98,7 @@ export default class DynamicTable extends React.Component {
             });
     }
 
-    refreshComponent = () => {
+    refreshComponent = () => {//批量删除的回调
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
@@ -130,7 +130,7 @@ export default class DynamicTable extends React.Component {
         this.setState({ addContent: e.target.value });
     }
 
-    handleAddOk = () => {
+    handleAddOk = () => {//新增数据
         axios.post("http://127.0.0.1:8080/api/add", {
             content: this.state.addContent
         })
@@ -151,6 +151,10 @@ export default class DynamicTable extends React.Component {
 
     handleSearchClick = (e) => {//新增请求
         const inputValue = this.inputRef.current.value;
+        if(inputValue === ""){
+            alert("请输入要查询的内容！！！")
+            return
+        }
         axios.get('http://127.0.0.1:8080/api/browse/searchTests?data=' + inputValue).then(response => {
             console.log(response.data);
             if (response.data.Data.test.length <= 0) {
@@ -163,6 +167,22 @@ export default class DynamicTable extends React.Component {
         });
     }
 
+    handleDelete = (e) =>{
+        //此处后端请求批量删除
+        console.log(e)
+        axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
+            strList: {e:''+e+''},
+            token: this.token
+        })
+            .then(require => {
+                console.log(require)
+                this.refreshComponent(); // 请求成功后重新加载组件
+            })
+            .catch(error => {
+                console.error(`请求失败：${error}`);
+            });
+    }
+
     render() {
         const { loading, TestLists, page, TitlePages, error } = this.state;
 
@@ -173,6 +193,7 @@ export default class DynamicTable extends React.Component {
 
         return (
             <>
+                {/* 顶部搜索框 */}
                 <div className="search_top">
                     <div className="title">试题管理</div>
                     <input placeholder="请输入要查询的内容" className="search_input" type="text"
@@ -181,6 +202,7 @@ export default class DynamicTable extends React.Component {
                     <input type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} />
                 </div>
 
+                {/* 中部数据展示框 */}
                 <div className={`data_middle`}>
                     {loading ? (
                         <div>数据加载中...</div> // 如果loading状态为true，则展示数据加载中的提示信息
@@ -221,7 +243,7 @@ export default class DynamicTable extends React.Component {
                                                 <td>
                                                     <button type="submit">修改</button>
                                                     &nbsp; &nbsp; &nbsp;
-                                                    <button type="submit">删除</button>
+                                                    <button type="submit" onClick={() => this.handleDelete(item.id)}>删除</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -254,11 +276,13 @@ export default class DynamicTable extends React.Component {
                     )}
                 </div>
 
+                {/* 底部分页组件 */}
                 <div className="paging_button">
                     <div onClick={this.getCheckTrue}><span>批量删除</span></div>
                     <Pagination defaultCurrent={1} current={page} total={TitlePages * 10} onChange={this.handleChangePage} />,
                 </div>
 
+                {/* 点击新增弹出的交互框 */}
                 <Modal
                     title=""
                     visible={this.state.visible}
