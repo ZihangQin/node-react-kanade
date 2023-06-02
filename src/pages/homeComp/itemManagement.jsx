@@ -99,10 +99,11 @@ export default class DynamicTable extends React.Component {
         this.setState({ checked: newChecked });
     }
 
-    getCheckTrue = (e) => {//批量删除
+    getCheckTrue = () => {//批量删除
         console.log(this.state.checked)
-        if (this.state.checked.length) {
+        if (Object.keys(this.state.checked).length === 0) {
             alert("请选择要批量删除的数据")
+            return
         }
         //此处后端请求批量删除
         axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
@@ -111,6 +112,7 @@ export default class DynamicTable extends React.Component {
         })
             .then(require => {
                 console.log(require)
+                message.success("批量删除成功")
                 this.refreshComponent(); // 请求成功后重新加载组件
             })
             .catch(error => {
@@ -200,8 +202,9 @@ export default class DynamicTable extends React.Component {
     }
 
     handleEditChange = (key, value) => {
-        const newForm = { ...this.state.editForm, [key]: value };
-        this.setState({ editForm: newForm });
+        const editForm = { ...this.state.editForm };
+        editForm[key] = value;
+        this.setState({ editForm });
     }
 
 
@@ -246,6 +249,8 @@ export default class DynamicTable extends React.Component {
 
 
     handleEditOk = () => {//修改请求
+        const { type, grade, content, difficulty, score, answer } = this.state.editForm;
+        console.log( type, grade, content, difficulty, score, answer)
         // 处理编辑操作，将新的数据提交给后端保存
         // ...
 
@@ -371,7 +376,17 @@ export default class DynamicTable extends React.Component {
 
                 {/* 底部分页组件 */}
                 <div className="paging_button">
-                    <div onClick={this.getCheckTrue}><span>批量删除</span></div>
+                    <Popconfirm
+                        title="确定要删除这个试题吗？"
+                        onConfirm={this.getCheckTrue}
+                        onCancel={this.confirm}
+                        okText="确定删除"
+                        cancelText="取消删除" // 将Cancel按钮的文本替换为"关闭"
+                    >
+                        {/* <button type="submit">删除</button> */}
+                        <Link to={'#'} style={{ textDecoration: 'none' }}><span>批量删除</span></Link>
+                    </Popconfirm>
+                    {/* <div onClick={this.getCheckTrue}><span>批量删除</span></div> */}
                     <Pagination defaultCurrent={1} current={page} total={TitlePages * 10} onChange={this.handleChangePage} />,
                 </div>
 
