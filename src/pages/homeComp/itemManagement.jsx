@@ -249,10 +249,26 @@ export default class DynamicTable extends React.Component {
 
 
     handleEditOk = () => {//修改请求
-        const { type, grade, content, difficulty, score, answer } = this.state.editForm;
-        console.log( type, grade, content, difficulty, score, answer)
+        const { id, type, grade, content, difficulty, score, answer } = this.state.editForm;
+        console.log(id, type, grade, content, difficulty, score, answer)
         // 处理编辑操作，将新的数据提交给后端保存
-        // ...
+        const token = cookie.load('token');
+        // console.log(token)
+        axios.post("http://127.0.0.1:8080/api/browse/updateTests", {
+            id: ""+id+"",
+            type: type,
+            grade: grade,
+            content: content,
+            difficulty: difficulty,
+            score: ""+score+"",
+            answer: answer,
+            token: token.Data
+        }).then(require => {
+            message.success("修改成功")
+            this.refreshComponent(); // 请求成功后重新加载组件
+        }).catch(error => {
+            message.error("修改失败: " + error)
+        })
 
         this.setState({ editVisible: false }); // 关闭编辑试题模态框
     }
