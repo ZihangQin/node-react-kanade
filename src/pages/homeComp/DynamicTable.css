@@ -96,7 +96,7 @@ td {
     text-shadow: 2px 2px 4px black;
     /* 添加文字凸起效果 */
     margin-top: -52px;
-    margin-left: -480px;
+    margin-left: -458px;
     margin-right: 250px;
     background-color: #dc143c;
     /* 阮红色 */
@@ -111,3 +111,63 @@ td {
     width: 300px;
     /* 修改宽度 */
 }
+
+.search_input {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .search_input:focus {
+    border-color: #007bff;
+  }
+
+  /* 搜索框 */
+.search_input {
+  width: 300px;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search_input:focus {
+  border-color: #007bff;
+}
+
+/* 查询和新增按钮 */
+.input_button {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .input_button:hover {
+    background-color: #fff;
+    color: #007bff;
+  }
+
+  .input_button_add{
+    height: 30px;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #b81111;
+    background-color: #790707;
+    color: #fae3e3;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .input_button_add:hover{
+    background-color: #61e304;
+    color: #012a55;
+  }

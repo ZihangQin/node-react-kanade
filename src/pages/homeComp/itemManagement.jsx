@@ -1,9 +1,10 @@
 import React from "react";
 import './DynamicTable.css';
-import { Pagination, Modal, Popconfirm, message, Form, Input } from 'antd';
+import { Pagination, Modal, Popconfirm, message, Form, Input, Spin } from 'antd';
 import axios from 'axios';
 import cookie from 'react-cookies'
 import { Link } from "react-router-dom";
+import { PlusOutlined } from '@ant-design/icons';
 
 export default class DynamicTable extends React.Component {
     constructor(props) {
@@ -100,11 +101,11 @@ export default class DynamicTable extends React.Component {
     }
 
     getCheckTrue = () => {//批量删除
-        console.log(this.state.checked)
         if (Object.keys(this.state.checked).length === 0) {
             alert("请选择要批量删除的数据")
             return
         }
+        //TODO:
         //此处后端请求批量删除
         axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
             strList: this.state.checked,
@@ -127,7 +128,6 @@ export default class DynamicTable extends React.Component {
             axios.get(
                 'http://127.0.0.1:8080/api/browse/testList?page=' + 1 + '&token=' + token.Data)
                 .then(require => {
-                    console.log(require)
                     const { TestLists, TitlePages } = require.data.Data;
                     this.setState({
                         page: 1,
@@ -207,7 +207,6 @@ export default class DynamicTable extends React.Component {
         this.setState({ editForm });
     }
 
-
     handleSearchClick = (e) => {//搜索请求
         const inputValue = this.inputRef.current.value;
         if (inputValue === "") {
@@ -215,11 +214,12 @@ export default class DynamicTable extends React.Component {
             return
         }
         axios.get('http://127.0.0.1:8080/api/browse/searchTests?data=' + inputValue).then(response => {
-            console.log(response.data);
-            if (response.data.Data.test.length <= 0) {
-                alert("暂无查询到改题目")
+            console.log(response.data.Data);
+            if (response.data.Data === null) {
+                alert("暂无查询到该题目")
                 return
             }
+            this.inputRef.current.value = ""
             this.setState({ TestLists: response.data.Data.test, TitlePages: response.data.Data.totle })
         }).catch(error => {
             console.log(error);
@@ -246,7 +246,6 @@ export default class DynamicTable extends React.Component {
     confirm = () => {
         message.error('取消了删除')
     }
-
 
     handleEditOk = () => {//修改请求
         const { id, type, grade, content, difficulty, score, answer } = this.state.editForm;
@@ -279,13 +278,12 @@ export default class DynamicTable extends React.Component {
         });
     }
 
-
     render() {
         const { loading, TestLists, page, TitlePages, error } = this.state;
 
         // 如果发生了错误，则展示错误信息
         if (error) {
-            return <div>{error}</div>;
+            return <div style={{color: 'red'}}>{error}</div>;
         }
 
         return (
@@ -295,14 +293,16 @@ export default class DynamicTable extends React.Component {
                     <div className="title" onClick={this.refreshComponent}>试题管理</div>
                     <input placeholder="请输入要查询的内容" className="search_input" type="text"
                         style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef} />
-                    <input type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
-                    <input type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} />
+                    <input className="input_button" type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
+                    <span className="input_button_add" type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} >
+                        <PlusOutlined style={{paddingTop: "7px"}}/>
+                    </span>
                 </div>
 
                 {/* 中部数据展示框 */}
                 <div className={`data_middle`}>
                     {loading ? (
-                        <div>数据加载中...</div> // 如果loading状态为true，则展示数据加载中的提示信息
+                         <Spin /> // 如果loading状态为true，则展示数据加载中的提示信息
                     ) : (
                         <>
                             {TestLists != null ? ( // 如果有数据则展示表格
@@ -436,6 +436,7 @@ export default class DynamicTable extends React.Component {
 
                 </Modal>
 
+                {/* 点击修改弹出的交互文本框 */}
                 <Modal
                     title="编辑试题"
                     visible={this.state.editVisible}
