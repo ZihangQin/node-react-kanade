@@ -1,6 +1,7 @@
 import React from "react";
 import { Spin } from 'antd'
-
+import './loggin.css'
+import TopTitle from "../../utils/title";
 export default class Log extends React.Component {
     constructor(props) {
         super(props);
@@ -16,6 +17,8 @@ export default class Log extends React.Component {
 
         return (
             <>
+            <TopTitle title="日志管理" className="custom-class-name" />
+
                 {/* 中部数据展示框 */}
                 <div className={`data_middle`}>
                     {loading ? (

@@ -7,13 +7,14 @@ import { Icon } from '@ant-design/compatible'
 import  Options from '../option/options'
 import DynamicTable from "../homeComp/itemManagement";
 import Log from "../loggin";
+import Settings from "../setting";
 
 const SubMenu = Menu.SubMenu;
 
 class Sider extends React.Component {
   state = {
     current: '1',
-    contentView: <h1>欢迎进入考试管理系统</h1>,
+    contentView: <Options options={[{id: 0, bgColor: '#f5f5f5', content: <h1 style={{color:"black"}}>欢迎进入考试管理系统</h1>}]}/>,
     userInfoName: "",
     userInfoCalculus: "",
     key: 0, // 将key属性抽离到state中
@@ -22,12 +23,11 @@ class Sider extends React.Component {
   
 
   handleClick = e => {
-    console.log('click ', e);
     this.setState({
       current: e.key,
     });
     if (e.key === '1') {
-      this.setState({ contentView: e.key === '1' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 1'}]}/> : null });
+      this.setState({ contentView: e.key === '1' ? <Options options={[{id: e.key, bgColor: '#f5f5f5', content: <Settings />}]}/> : null });
     } else if (e.key === '2') {
       this.setState({ contentView: e.key === '2' ? <Options options={[{id: e.key, bgColor: 'red', content: 'Option 2'}]}/> : null });
     } else if (e.key === '3') {
@@ -66,12 +66,16 @@ class Sider extends React.Component {
     }
   }
 
+  handleOnClickTopMenu = () =>{
+    window.location.href = "/index"
+  }
+
 
   render() {
     return (
       <>
         <div className="top_menu">
-          <span>考试管理系统</span>
+          <span onClick={this.handleOnClickTopMenu}>考试管理系统</span>
           <div className="userInfo">
             <span>用户名：{this.state.userInfoName},</span>
             <span>积分：{this.state.userInfoCalculus}</span>

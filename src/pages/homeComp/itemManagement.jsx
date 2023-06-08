@@ -1,5 +1,5 @@
 import React from "react";
-import './DynamicTable.css';
+import './dynamicTable.css';
 import { Pagination, Modal, Popconfirm, message, Form, Input, Spin } from 'antd';
 import axios from 'axios';
 import cookie from 'react-cookies'
@@ -228,7 +228,7 @@ export default class DynamicTable extends React.Component {
 
     handleDelete = (e) => {//点击表格后的删除做到删除单挑记录
         //此处后端请求批量删除
-        console.log(e)
+        //TODO: 用于保存到合约操作
         axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
             strList: { e: '' + e + '' },
             token: this.token
@@ -250,6 +250,8 @@ export default class DynamicTable extends React.Component {
     handleEditOk = () => {//修改请求
         const { id, type, grade, content, difficulty, score, answer } = this.state.editForm;
         console.log(id, type, grade, content, difficulty, score, answer)
+        //TODO: 增加合约请求，用于保存操作数据
+
         // 处理编辑操作，将新的数据提交给后端保存
         const token = cookie.load('token');
         // console.log(token)
@@ -393,7 +395,7 @@ export default class DynamicTable extends React.Component {
                 {/* 底部分页组件 */}
                 <div className="paging_button">
                     <Popconfirm
-                        title="确定要删除这个试题吗？"
+                        title="确定要删除选中的试题吗？"
                         onConfirm={this.getCheckTrue}
                         onCancel={this.confirm}
                         okText="确定删除"

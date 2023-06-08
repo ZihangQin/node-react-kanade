@@ -1,0 +1,24 @@
+.search_top_log{
+    width: 100%;
+    height: 70px;
+    margin-bottom: 0px;
+    padding-top: 10px;
+    /* background-color: #0854ad; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search_top_log .title_log{
+    width: 75px;
+    height: auto;
+    font-size: 18px;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+    /* 添加文字凸起效果 */
+    margin-top: -69px;
+    margin-left: -930px;
+    margin-right: 250px;
+    background-color: #dc143c;
+    /* 阮红色 */
+}
