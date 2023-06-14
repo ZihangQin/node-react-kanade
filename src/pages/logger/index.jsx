@@ -37,28 +37,30 @@ export default class Log extends React.Component {
                                 console.log(result[0]["OperatorHash"]);
                                 console.log(typeof result[0]["OperatorHash"]);
                                 this.setState({ results: result[0]["OperatorHash"] });
+                                // 先将所有日志对象的 flag 属性设为 false
+                                this.setState(prevState => ({
+                                    LogLists: prevState.LogLists.map(item => ({ ...item, flag: "false" }))
+                                }));
                                 //首先遍历合约返回值
                                 for (let i = 0; i < result.length; i++) {
                                     const contractHash = result[i]["OperatorHash"]
                                     //再去遍历数据库中的hash值
-                                    for (let j = 0; j < this.state.LogLists.length; j++) {
-                                        const databaseHash = this.state.LogLists[j].hashValue
+                                    // 遍历合约返回值
+                                    for (let i = 0; i < result.length; i++) {
+                                        const contractHash = result[i]["OperatorHash"]
+                                        // 再去遍历数据库中的 hash 值
+                                        for (let j = 0; j < this.state.LogLists.length; j++) {
+                                            const databaseHash = this.state.LogLists[j].hashValue
 
-                                        //查看是否有匹配的值
-                                        console.log(contractHash===databaseHash)
-                                        if (contractHash === databaseHash) {
-                                            // 找到匹配项后，将对应 item 对象的 flag 属性设为 true
-                                            this.setState(prevState => ({
-                                                LogLists: prevState.LogLists.map((item, index) =>
-                                                    index === j ? { ...item, flag: "true" } : item
-                                                )
-                                            }));
-                                        } else {
-                                            this.setState(prevState => ({
-                                                LogLists: prevState.LogLists.map((item, index) =>
-                                                    index === j ? { ...item, flag: "false" } : item
-                                                )
-                                            }));
+                                            // 查看是否有匹配的值
+                                            if (contractHash === databaseHash) {
+                                                // 找到匹配项后，将对应 item 对象的 flag 属性设为 true
+                                                this.setState(prevState => ({
+                                                    LogLists: prevState.LogLists.map((item, index) =>
+                                                        index === j ? { ...item, flag: "true" } : item
+                                                    )
+                                                }));
+                                            }
                                         }
                                     }
                                 }
@@ -93,28 +95,30 @@ export default class Log extends React.Component {
                                 console.log(result[0]["OperatorHash"]);
                                 console.log(typeof result[0]["OperatorHash"]);
                                 this.setState({ results: result[0]["OperatorHash"] });
+                                // 先将所有日志对象的 flag 属性设为 false
+                                this.setState(prevState => ({
+                                    LogLists: prevState.LogLists.map(item => ({ ...item, flag: "false" }))
+                                }));
                                 //首先遍历合约返回值
                                 for (let i = 0; i < result.length; i++) {
                                     const contractHash = result[i]["OperatorHash"]
                                     //再去遍历数据库中的hash值
-                                    for (let j = 0; j < this.state.LogLists.length; j++) {
-                                        const databaseHash = this.state.LogLists[j].hashValue
-                                        //查看是否有匹配的值
-                                        console.log(contractHash,databaseHash)
-                                        if (contractHash === databaseHash) {
-                                            // 找到匹配项后，将对应 item 对象的 flag 属性设为 true
-                                            this.setState(prevState => ({
-                                                LogLists: prevState.LogLists.map((item, index) =>
-                                                    index === j ? { ...item, flag: "true" } : item
-                                                )
-                                            }));
-                                            break
-                                        } else {
-                                            this.setState(prevState => ({
-                                                LogLists: prevState.LogLists.map((item, index) =>
-                                                    index === j ? { ...item, flag: "false" } : item
-                                                )
-                                            }));
+                                    // 遍历合约返回值
+                                    for (let i = 0; i < result.length; i++) {
+                                        const contractHash = result[i]["OperatorHash"]
+                                        // 再去遍历数据库中的 hash 值
+                                        for (let j = 0; j < this.state.LogLists.length; j++) {
+                                            const databaseHash = this.state.LogLists[j].hashValue
+
+                                            // 查看是否有匹配的值
+                                            if (contractHash === databaseHash) {
+                                                // 找到匹配项后，将对应 item 对象的 flag 属性设为 true
+                                                this.setState(prevState => ({
+                                                    LogLists: prevState.LogLists.map((item, index) =>
+                                                        index === j ? { ...item, flag: "true" } : item
+                                                    )
+                                                }));
+                                            }
                                         }
                                     }
                                 }

@@ -60,4 +60,4 @@ export const MyContractABI = [
 	}
 ]
 
-export const MyContractAddress = "0x0FBFfCc29A265539490656E1AdE3406ADC97D2D6"
+export const MyContractAddress = "0x53EC13daA648a534b07e070be7Cc91C71BaBe713"
