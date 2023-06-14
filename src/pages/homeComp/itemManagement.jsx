@@ -5,6 +5,7 @@ import axios from 'axios';
 import cookie from 'react-cookies'
 import { Link } from "react-router-dom";
 import { PlusOutlined } from '@ant-design/icons';
+import sha256 from 'js-sha256';
 
 export default class DynamicTable extends React.Component {
     constructor(props) {
@@ -21,9 +22,12 @@ export default class DynamicTable extends React.Component {
             isListPage: true, // 添加 isListPage 变量，默认为 true
             form: {},    //用于保存新增弹框中输入值
             editForm: {}, // 编辑试题表单数据
-            editVisible: false
+            editVisible: false,
+            contract: [],
+            currentTime: new Date()
         };
         this.inputRef = React.createRef();
+        this.UserName = ""
     }
 
     handleEdit = (item) => {// 将要编辑的试题信息存入editForm中
@@ -43,6 +47,8 @@ export default class DynamicTable extends React.Component {
     }
 
     async componentDidMount() {//首次加载改组件的回调
+        const { contract, account } = this.props; // 从 props 中获取 contract 属性
+        this.setState({ contract: contract, account: account })
         this.setState({ loading: true }); // 开始请求数据前将loading状态设置为true
         const token = cookie.load('token');
         try {
@@ -105,7 +111,38 @@ export default class DynamicTable extends React.Component {
             alert("请选择要批量删除的数据")
             return
         }
-        //TODO:
+        const token = cookie.load('token');
+        const c = this.state.contract
+        const a = this.state.account
+        //获取当前操作人
+        axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data).then(require => {
+            console.log(a)
+            console.log(require.data.Data.username)
+            this.UserName = require.data.Data.username
+            // console.log(this.UserName)
+            const sha256Search = "" + this.state.currentTime.toLocaleDateString() + "&" + this.UserName + "&批量删除" + this.state.currentTime.toLocaleTimeString() + ""
+            // console.log(sha256Search)
+            const shaData = this.sha256Data(sha256Search)
+            // console.log(shaData,this.state.currentTime.toLocaleDateString(),this.state.currentTime.toLocaleTimeString())
+            //进行操作日志保存
+            axios.post('http://127.0.0.1:8080/api/logger/saveLogger', {
+                opName: '批量删除',
+                Username: this.UserName,
+                LocaleDate: this.state.currentTime.toLocaleDateString(),
+                LocaleTime: this.state.currentTime.toLocaleTimeString(),
+                opHash: shaData
+            }).then(async requires => {
+                //在请求成功后将该操作传到区块链上
+                await c.methods.setLogger('批量删除', shaData, this.UserName).send({from: a})
+                // console.log(requires)
+                // console.log(require)
+            })
+
+        }).catch(error => {
+            console.log(error)
+            alert(error.data.Msg)
+        })
+
         //此处后端请求批量删除
         axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
             strList: this.state.checked,
@@ -168,9 +205,45 @@ export default class DynamicTable extends React.Component {
 
         console.log(type, grade, content, difficulty, score, answer)
         if (type === undefined || grade === undefined || content === undefined || difficulty === undefined || score === undefined || answer === undefined || token === undefined) {
-            alert("输入不能为空")
+            alert("请输入内容")
             return
         }
+        if (type === "" || grade === "" || content === "" || difficulty === "" || score === "" || answer === "" || token === "") {
+            alert("请检查！确保每项都不为空！")
+            return
+        }
+
+        const c = this.state.contract
+        const a = this.state.account
+        //获取当前操作人
+        axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data).then(require => {
+            console.log(a)
+            console.log(require.data.Data.username)
+            this.UserName = require.data.Data.username
+            // console.log(this.UserName)
+            const sha256Search = "" + this.state.currentTime.toLocaleDateString() + "&" + this.UserName + "&新增" + this.state.currentTime.toLocaleTimeString() + ""
+            // console.log(sha256Search)
+            const shaData = this.sha256Data(sha256Search)
+            // console.log(shaData,this.state.currentTime.toLocaleDateString(),this.state.currentTime.toLocaleTimeString())
+            //进行操作日志保存
+            axios.post('http://127.0.0.1:8080/api/logger/saveLogger', {
+                opName: '新增',
+                Username: this.UserName,
+                LocaleDate: this.state.currentTime.toLocaleDateString(),
+                LocaleTime: this.state.currentTime.toLocaleTimeString(),
+                opHash: shaData
+            }).then(async requires => {
+                //在请求成功后将该操作传到区块链上
+                await c.methods.setLogger('新增', shaData, this.UserName).send({from: a})
+                // console.log(requires)
+                // console.log(require)
+            })
+
+        }).catch(error => {
+            console.log(error)
+            alert(error.data.Msg)
+        })
+
 
         axios.post("http://127.0.0.1:8080/api/browse/saveTest", {
             type: type,
@@ -181,6 +254,17 @@ export default class DynamicTable extends React.Component {
             answer: answer,
             token: token.Data
         }).then(require => {
+            this.setState({
+                visible: false,
+                form: {
+                    type: '',
+                    grade: '',
+                    content: '',
+                    difficulty: '',
+                    score: '',
+                    answer: ''
+                }
+            });
             this.refreshComponent();
         }).catch(error => {
             console.log(error)
@@ -198,6 +282,17 @@ export default class DynamicTable extends React.Component {
     }
 
     handleAddCancel = () => {
+        this.setState({
+            visible: false,
+            form: {
+                type: '',
+                grade: '',
+                content: '',
+                difficulty: '',
+                score: '',
+                answer: ''
+            }
+        });
         this.setState({ visible: false, addContent: '' });
     }
 
@@ -207,12 +302,49 @@ export default class DynamicTable extends React.Component {
         this.setState({ editForm });
     }
 
+    sha256Data = (data) => {
+        return sha256(data);
+    };
+
     handleSearchClick = (e) => {//搜索请求
         const inputValue = this.inputRef.current.value;
+        const c = this.state.contract
+        const a = this.state.account
+        const token = cookie.load('token');
         if (inputValue === "") {
             alert("请输入要查询的内容！！！")
             return
         }
+        //获取当前操作人
+        axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data).then(require => {
+            console.log(a)
+            console.log(require.data.Data.username)
+            this.UserName = require.data.Data.username
+            // console.log(this.UserName)
+            const sha256Search = "" + this.state.currentTime.toLocaleDateString() + "&" + this.UserName + "&搜索" + this.state.currentTime.toLocaleTimeString() + ""
+            // console.log(sha256Search)
+            const shaData = this.sha256Data(sha256Search)
+            // console.log(shaData,this.state.currentTime.toLocaleDateString(),this.state.currentTime.toLocaleTimeString())
+            //进行操作日志保存
+            axios.post('http://127.0.0.1:8080/api/logger/saveLogger', {
+                opName: '搜索',
+                Username: this.UserName,
+                LocaleDate: this.state.currentTime.toLocaleDateString(),
+                LocaleTime: this.state.currentTime.toLocaleTimeString(),
+                opHash: shaData
+            }).then(async requires => {
+                //在请求成功后将该操作传到区块链上
+                await c.methods.setLogger('搜索', shaData, this.UserName).send({from: a})
+                // console.log(requires)
+                // console.log(require)
+            })
+
+        }).catch(error => {
+            console.log(error)
+            alert(error.data.Msg)
+        })
+
+        //搜索请求
         axios.get('http://127.0.0.1:8080/api/browse/searchTests?data=' + inputValue).then(response => {
             console.log(response.data.Data);
             if (response.data.Data === null) {
@@ -229,6 +361,38 @@ export default class DynamicTable extends React.Component {
     handleDelete = (e) => {//点击表格后的删除做到删除单挑记录
         //此处后端请求批量删除
         //TODO: 用于保存到合约操作
+        const c = this.state.contract
+        const a = this.state.account
+        const token = cookie.load('token');
+        //获取当前操作人
+        axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data).then(require => {
+            console.log(a)
+            console.log(require.data.Data.username)
+            this.UserName = require.data.Data.username
+            // console.log(this.UserName)
+            const sha256Search = "" + this.state.currentTime.toLocaleDateString() + "&" + this.UserName + "&删除" + this.state.currentTime.toLocaleTimeString() + ""
+            // console.log(sha256Search)
+            const shaData = this.sha256Data(sha256Search)
+            // console.log(shaData,this.state.currentTime.toLocaleDateString(),this.state.currentTime.toLocaleTimeString())
+            //进行操作日志保存
+            axios.post('http://127.0.0.1:8080/api/logger/saveLogger', {
+                opName: '删除',
+                Username: this.UserName,
+                LocaleDate: this.state.currentTime.toLocaleDateString(),
+                LocaleTime: this.state.currentTime.toLocaleTimeString(),
+                opHash: shaData
+            }).then(async requires => {
+                //在请求成功后将该操作传到区块链上
+                await c.methods.setLogger('删除', shaData, this.UserName).send({from: a})
+                // console.log(requires)
+                // console.log(require)
+            })
+
+        }).catch(error => {
+            console.log(error)
+            alert(error.data.Msg)
+        })
+
         axios.post("http://127.0.0.1:8080/api/browse/deleteTests", {
             strList: { e: '' + e + '' },
             token: this.token
@@ -249,20 +413,54 @@ export default class DynamicTable extends React.Component {
 
     handleEditOk = () => {//修改请求
         const { id, type, grade, content, difficulty, score, answer } = this.state.editForm;
-        console.log(id, type, grade, content, difficulty, score, answer)
+
+        if (type === "" || grade === "" || content === "" || difficulty === "" || score === "" || answer === "") {
+            alert("请正确输入内容")
+            return
+        }
         //TODO: 增加合约请求，用于保存操作数据
+        const c = this.state.contract
+        const a = this.state.account
+        const token = cookie.load('token');
+        //获取当前操作人
+        axios.get('http://127.0.0.1:8080/api/browse/user?authorization=' + token.Data).then(require => {
+            console.log(a)
+            console.log(require.data.Data.username)
+            this.UserName = require.data.Data.username
+            // console.log(this.UserName)
+            const sha256Search = "" + this.state.currentTime.toLocaleDateString() + "&" + this.UserName + "&修改" + this.state.currentTime.toLocaleTimeString() + ""
+            // console.log(sha256Search)
+            const shaData = this.sha256Data(sha256Search)
+            // console.log(shaData,this.state.currentTime.toLocaleDateString(),this.state.currentTime.toLocaleTimeString())
+            //进行操作日志保存
+            axios.post('http://127.0.0.1:8080/api/logger/saveLogger', {
+                opName: '修改: '+id+"",
+                Username: this.UserName,
+                LocaleDate: this.state.currentTime.toLocaleDateString(),
+                LocaleTime: this.state.currentTime.toLocaleTimeString(),
+                opHash: shaData
+            }).then(async requires => {
+                //在请求成功后将该操作传到区块链上
+                await c.methods.setLogger('修改: '+id+'', shaData, this.UserName).send({from: a})
+                // console.log(requires)
+                // console.log(require)
+            })
+
+        }).catch(error => {
+            console.log(error)
+            alert(error.data.Msg)
+        })
 
         // 处理编辑操作，将新的数据提交给后端保存
-        const token = cookie.load('token');
         // console.log(token)
         axios.post("http://127.0.0.1:8080/api/browse/updateTests", {
-            id: ""+id+"",
-            type: type,
-            grade: grade,
-            content: content,
-            difficulty: difficulty,
-            score: ""+score+"",
-            answer: answer,
+            id: "" + id + "",
+            type: type.replace(/\s+/g, ''),
+            grade: grade.replace(/\s+/g, ''),
+            content: content.replace(/\s+/g, ''),
+            difficulty: difficulty.replace(/\s+/g, ''),
+            score: "" + score + "",
+            answer: answer.replace(/\s+/g, ''),
             token: token.Data
         }).then(require => {
             message.success("修改成功")
@@ -285,7 +483,7 @@ export default class DynamicTable extends React.Component {
 
         // 如果发生了错误，则展示错误信息
         if (error) {
-            return <div style={{color: 'red'}}>{error}</div>;
+            return <div style={{ color: 'red' }}>{error}</div>;
         }
 
         return (
@@ -297,14 +495,14 @@ export default class DynamicTable extends React.Component {
                         style={{ width: "300px", margin: "0 10px" }} ref={this.inputRef} />
                     <input className="input_button" type="submit" value={"查询"} onClick={this.handleSearchClick} style={{ margin: "0 10px" }} />
                     <span className="input_button_add" type="submit" value={"新增"} onClick={this.handleAddClick} style={{ margin: "0 10px" }} >
-                        <PlusOutlined style={{paddingTop: "7px"}}/>
+                        <PlusOutlined style={{ paddingTop: "7px" }} />
                     </span>
                 </div>
 
                 {/* 中部数据展示框 */}
                 <div className={`data_middle`}>
                     {loading ? (
-                         <Spin /> // 如果loading状态为true，则展示数据加载中的提示信息
+                        <Spin /> // 如果loading状态为true，则展示数据加载中的提示信息
                     ) : (
                         <>
                             {TestLists != null ? ( // 如果有数据则展示表格

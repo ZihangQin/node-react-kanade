@@ -1,7 +1,4 @@
 import React from "react";
-import TopTitle from "../../utils/title";
-import ContractComponent from "../../assets/web3";
-
 
 
 
@@ -9,31 +6,23 @@ export default class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: null
+            result: null
         };
-        this.contractRef = React.createRef();
     }
 
     async componentDidMount() {
-        // 获取合约实例化对象
-        const contractInstance = this.contractRef.current;
-        // 调用合约方法
-        const result = await contractInstance.methods.add().call();
-        // 更新状态
-        this.setState({ value: result });
+        const { contract } = this.props; // 从 props 中获取 contract 属性
+        const result = await contract.methods.add().call(); // 调用合约方法
+        this.setState({ result }); // 将结果保存到组件状态中
     }
 
-
     render() {
+        const { result } = this.state;
         return (
             <>
-                <TopTitle title={"系统设置"} className={"setting_title"} />
-                <div>
-                    {/* 通过ref引用获取合约实例化对象 */}
-                    <ContractComponent ref={this.contractRef} />
-                    <div>调用结果：{this.state.value}</div>
-                </div>
+                <h1>web3调用测试</h1>
+                <span style={{backgroundColor:"black"}}>{result}</span>
             </>
-        );
+        )
     }
 }
